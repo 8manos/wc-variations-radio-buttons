@@ -6,7 +6,7 @@ Tested up to: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 2.2
-WC tested up to: 2.4.3
+WC tested up to: 2.4.4
 
 Variations Radio Buttons for WooCommerce. Let your customers choose product variations using radio buttons instead of dropdowns.
 
