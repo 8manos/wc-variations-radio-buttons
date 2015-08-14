@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: WooCommerce Variations Radio Buttons
- * Description: Let your customers choose product variations using radio buttons instead of dropdowns.
+ * Plugin Name: WC Variations Radio Buttons
+ * Description: Variations Radio Buttons for WooCommerce. Let your customers choose product variations using radio buttons instead of dropdowns.
  * Version:     1.0
  * Author:      8manos
  * Author URI:  http://8manos.com
