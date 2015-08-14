@@ -2,9 +2,11 @@
 Contributors: mantish
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
 Requires at least: 4.0
-Tested up to: 4.2.3
+Tested up to: 4.3
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 2.2
-WC tested up to: 2.3.13
+WC tested up to: 2.4.3
 
 Let your customers choose product variations using radio buttons instead of dropdowns.
 
