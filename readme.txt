@@ -3,7 +3,7 @@ Contributors: mantish
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
 Requires at least: 4.0
 Tested up to: 4.3
-Stable tag: 1.0
+Stable tag: 1.0.1
 WC requires at least: 2.2
 WC tested up to: 2.4.4
 License: GPLv2 or later
