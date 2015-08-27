@@ -3,7 +3,7 @@ Contributors: mantish
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
 Requires at least: 4.0
 Tested up to: 4.3
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 WC requires at least: 2.2
 WC tested up to: 2.4.4
 License: GPLv2 or later
@@ -17,9 +17,29 @@ Radio buttons are more friendly than dropdown selects. This plugin will help you
 
 The radio buttons will be toggled dinamically so your customers won't be able to choose non existent variations.
 
+### Theme Compatibility
+
+This plugin may not work out of the box with some themes. This is due to a theme having its own template for variation selection (single-product/add-to-cart/variable.php).
+
+To make this plugin work with a non compatible theme, a [child theme](http://themify.me/docs/child-themes) has to be created.
+Then copy plugins/wc-variations-radio-buttons/templates/single-product/add-to-cart/variable.php to themes/your-child-theme/woocommerce/single-product/add-to-cart/variable.php
+
+### Github
+
 Contribute at https://github.com/8manos/wc-variations-radio-buttons
 
 == Installation ==
 
 1. Upload to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
+
+== Changelog ==
+
+= 1.0.2 =
+* Now works better with some themes.
+
+= 1.0.1 =
+* WooCommerce 2.4 compatibility.
+
+= 1.0 =
+* First release.
