@@ -233,7 +233,9 @@
 					// Get other attributes, if any
 					$other_attrs = $variation_form.find( '.value' ).not(el);
 					if ($other_attrs.length == 0) {
-						return;
+						//Even if there's only one attribute, some variations may be disabled 
+						//through the 'woocommerce_variation_is_active' filter, so we still need to go through all variations..
+						//	return;
 					}
 
 					var other_settings = {};
