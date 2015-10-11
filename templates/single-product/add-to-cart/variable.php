@@ -17,7 +17,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 function print_attribute_radio( $checked_value, $value, $label, $name ) {
 	$checked = checked( sanitize_title( $checked_value ), sanitize_title( $value ), false );
 	$input_name = 'attribute_' . esc_attr( $name ) ;
-	$esc_value = esc_attr( sanitize_title( $value ) );
+	//Needs to be the unaltered attribute value, because it's later compared to that value in add-to-cart-variation.js
+	//	$esc_value = esc_attr( sanitize_title( $value ) );
+	$esc_value = esc_attr( $value );
 	$id = esc_attr( $name . '_v_' . $value );
 	$filtered_label = apply_filters( 'woocommerce_variation_option_name', $label );
 	printf( '<div><input type="radio" name="%1$s" value="%2$s" id="%3$s" %4$s><label for="%3$s">%5$s</label></div>', $input_name, $esc_value, $id, $checked, $filtered_label );
