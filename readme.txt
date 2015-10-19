@@ -2,10 +2,10 @@
 Contributors: mantish
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
 Requires at least: 4.0
-Tested up to: 4.3
-Stable tag: 1.0.2
+Tested up to: 4.4
+Stable tag: 1.0.3
 WC requires at least: 2.2
-WC tested up to: 2.4.4
+WC tested up to: 2.4.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,11 @@ Contribute at https://github.com/8manos/wc-variations-radio-buttons
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.0.3 =
+* Now works with woocommerce_variation_is_active filter.
+* Fix bug that prevented the plugin to work with custom attributes.
+* Hopefuly no more "The plugin does not have a valid header." message.
 
 = 1.0.2 =
 * Now works better with some themes.
