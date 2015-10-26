@@ -4,7 +4,7 @@
  *
  * @author  WooThemes
  * @package WooCommerce/Templates
- * @version 2.3.0
+ * @version 2.4.0
  *
  * Modified to use radio buttons instead of dropdowns
  * @author 8manos
@@ -15,28 +15,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function print_attribute_radio( $checked_value, $value, $label, $name ) {
-	$checked = checked( sanitize_title( $checked_value ), sanitize_title( $value ), false );
+	// This handles < 2.4.0 bw compatibility where text attributes were not sanitized.
+	$checked = sanitize_title( $checked_value ) === $checked_value ? checked( $checked_value, sanitize_title( $value ), false ) : checked( $checked_value, $value, false );
+
 	$input_name = 'attribute_' . esc_attr( $name ) ;
-	//Needs to be the unaltered attribute value, because it's later compared to that value in add-to-cart-variation.js
-	//	$esc_value = esc_attr( sanitize_title( $value ) );
 	$esc_value = esc_attr( $value );
 	$id = esc_attr( $name . '_v_' . $value );
 	$filtered_label = apply_filters( 'woocommerce_variation_option_name', $label );
 	printf( '<div><input type="radio" name="%1$s" value="%2$s" id="%3$s" %4$s><label for="%3$s">%5$s</label></div>', $input_name, $esc_value, $id, $checked, $filtered_label );
 }
 
-global $product, $post;
-?>
+global $product;
 
-<?php do_action( 'woocommerce_before_add_to_cart_form' ); ?>
+$attribute_keys = array_keys( $attributes );
 
-<form class="variations_form cart" method="post" enctype='multipart/form-data' data-product_id="<?php echo $post->ID; ?>" data-product_variations="<?php echo esc_attr( json_encode( $available_variations ) ) ?>">
+do_action( 'woocommerce_before_add_to_cart_form' ); ?>
+
+<form class="variations_form cart" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->id ); ?>" data-product_variations="<?php echo esc_attr( json_encode( $available_variations ) ) ?>">
 	<?php do_action( 'woocommerce_before_variations_form' ); ?>
 
-	<?php if ( ! empty( $available_variations ) ) : ?>
+	<?php if ( empty( $available_variations ) && false !== $available_variations ) : ?>
+		<p class="stock out-of-stock"><?php _e( 'This product is currently out of stock and unavailable.', 'woocommerce' ); ?></p>
+	<?php else : ?>
 		<table class="variations" cellspacing="0">
 			<tbody>
-				<?php $loop = 0; foreach ( $attributes as $name => $options ) : $loop++; ?>
+				<?php foreach ( $attributes as $name => $options ) : ?>
 					<tr>
 						<td class="label"><label for="<?php echo sanitize_title( $name ); ?>"><?php echo wc_attribute_label( $name ); ?></label></td>
 						<?php
@@ -51,12 +54,10 @@ global $product, $post;
 						?>
 						<td class="value">
 							<?php
-							if ( is_array( $options ) ) {
-
-								// Get terms if this is a taxonomy - ordered
+							if ( ! empty( $options ) ) {
 								if ( taxonomy_exists( $name ) ) {
-
-									$terms = wc_get_product_terms( $post->ID, $name, array( 'fields' => 'all' ) );
+									// Get terms if this is a taxonomy - ordered. We need the names too.
+									$terms = wc_get_product_terms( $product->id, $name, array( 'fields' => 'all' ) );
 
 									foreach ( $terms as $term ) {
 										if ( ! in_array( $term->slug, $options ) ) {
@@ -64,24 +65,18 @@ global $product, $post;
 										}
 										print_attribute_radio( $checked_value, $term->slug, $term->name, $sanitized_name );
 									}
-
 								} else {
-
 									foreach ( $options as $option ) {
 										print_attribute_radio( $checked_value, $option, $option, $sanitized_name );
 									}
-
 								}
 							}
-							?>
-							<?php
-							if ( sizeof( $attributes ) === $loop ) {
-								echo '<a class="reset_variations" href="#reset">' . __( 'Clear selection', 'woocommerce' ) . '</a>';
-							}
+
+							echo end( $attribute_keys ) === $name ? '<a class="reset_variations" href="#">' . __( 'Clear selection', 'woocommerce' ) . '</a>' : '';
 							?>
 						</td>
 					</tr>
-				 <?php endforeach;?>
+				<?php endforeach; ?>
 			</tbody>
 		</table>
 
@@ -108,10 +103,6 @@ global $product, $post;
 		</div>
 
 		<?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
-
-	<?php else : ?>
-
-		<p class="stock out-of-stock"><?php _e( 'This product is currently out of stock and unavailable.', 'woocommerce' ); ?></p>
 
 	<?php endif; ?>
 
