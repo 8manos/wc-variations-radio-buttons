@@ -4,8 +4,8 @@ Tags: woocommerce, variations, woocommerce variations, radio buttons, variations
 Requires at least: 4.0
 Tested up to: 4.4
 Stable tag: 1.0.3
-WC requires at least: 2.2
-WC tested up to: 2.4.7
+WC requires at least: 2.4
+WC tested up to: 2.4.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
