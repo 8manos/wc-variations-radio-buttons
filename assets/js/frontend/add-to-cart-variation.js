@@ -17,14 +17,14 @@
 		// Unbind any existing events
 		$form.unbind( 'check_variations update_variation_values found_variation' );
 		$form.find( '.reset_variations' ).unbind( 'click' );
-		$form.find( '.variations input' ).unbind( 'change focusin' );
+		$form.find( '.variations input[type=radio]' ).unbind( 'change focusin' );
 
 		// Bind new events to form
 		$form
 
 		// On clicking the reset variation button
 		.on( 'click', '.reset_variations', function() {
-			$form.find( '.variations input:checked' ).removeAttr('checked').change();
+			$form.find( '.variations input[type=radio]:checked' ).removeAttr('checked').change();
 			$form.trigger( 'reset_data' );
 			return false;
 		} )
@@ -78,7 +78,7 @@
 		} )
 
 		// On changing an attribute
-		.on( 'change', '.variations input', function() {
+		.on( 'change', '.variations input[type=radio]', function() {
 			$form.find( 'input[name="variation_id"], input.variation_id' ).val( '' ).change();
 			$form.find( '.wc-no-matching-variations' ).remove();
 
@@ -91,8 +91,8 @@
 				var some_attributes_chosen = false;
 				var data                   = {};
 
-				$form.find( '.value' ).each( function() {
-					var $radios = $( this ).find( 'input' );
+				$form.find( '.variations .value' ).each( function() {
+					var $radios = $( this ).find( 'input[type=radio]' );
 					var $checked_radio = $radios.filter(':checked');
 					var attribute_name = $radios.attr( 'name' );
 
@@ -305,7 +305,7 @@
 				$reset_variations = $form.find( '.reset_variations' );
 
 			$form.find( '.variations .value' ).each( function() {
-				var $radios = $( this ).find( 'input' );
+				var $radios = $( this ).find( 'input[type=radio]' );
 				var $checked_radio = $radios.filter(':checked');
 
 				var attribute_name = $radios.attr( 'name' );
@@ -338,7 +338,7 @@
 					$form.trigger( 'found_variation', [ variation ] );
 				} else {
 					// Nothing found - reset fields
-					$form.find( '.variations input:checked' ).removeAttr('checked');
+					$form.find( '.variations input[type=radio]:checked' ).removeAttr('checked');
 
 					if ( ! focus ) {
 						$form.trigger( 'reset_data' );
@@ -375,16 +375,16 @@
 			}
 
 			// Check each radio buttons group (attribute)
-			$form.find( '.value' ).each( function( index, el ) {
+			$form.find( '.variations .value' ).each( function( index, el ) {
 
 				// Get other attributes, if any
-				$other_attrs = $form.find( '.value' ).not(el);
+				$other_attrs = $form.find( '.variations .value' ).not(el);
 
 				var other_settings = {};
 
 				// Loop through other attributes
-				$other_attrs.each( function( index, other_el ) {
-					var $radios = $( this ).find( 'input' );
+				$other_attrs.each( function() {
+					var $radios = $( this ).find( 'input[type=radio]' );
 					var attribute_name = $radios.attr( 'name' );
 					var $checked_radio = $radios.filter(':checked');
 
@@ -396,7 +396,7 @@
 				var matching_variations = wc_variation_form_matcher.find_matching_variations( variations, other_settings );
 
 				// Disable all radio options of this attribute, then we'll check if should be enabled
-				var $current_radios = $( el ).find( 'input' );
+				var $current_radios = $( el ).find( 'input[type=radio]' );
 				$current_radios.attr( 'disabled', 'disabled' );
 
 				var current_attr_name = $current_radios.attr( 'name' );
@@ -522,7 +522,7 @@
 	$( function() {
 		if ( typeof wc_add_to_cart_variation_params !== 'undefined' ) {
 			$( '.variations_form' ).each( function() {
-				$( this ).wc_variation_form().find('.variations input:eq(0)').change();
+				$( this ).wc_variation_form().find('.variations input[type=radio]:eq(0)').change();
 			});
 		}
 	});
