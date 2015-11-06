@@ -1,9 +1,9 @@
-=== Plugin Name ===
+=== WC Variations Radio Buttons ===
 Contributors: mantish
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
-Requires at least: 4.0
+Requires at least: 4.1
 Tested up to: 4.4
-Stable tag: 1.0.3
+Stable tag: 1.1.0
 WC requires at least: 2.4
 WC tested up to: 2.4.8
 License: GPLv2 or later
@@ -34,6 +34,11 @@ Contribute at https://github.com/8manos/wc-variations-radio-buttons
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.1.0 =
+* Full compatibility with WooCommerce 2.4.
+* Variations are called via AJAX when there are many variations.
+* Changed version requirements: At least WordPress 4.1 and WooCommerce 2.4.
 
 = 1.0.3 =
 * Now works with woocommerce_variation_is_active filter.
