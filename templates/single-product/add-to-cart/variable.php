@@ -95,8 +95,8 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 				<button type="submit" class="single_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text(); ?></button>
 			</div>
 
-			<input type="hidden" name="add-to-cart" value="<?php echo $product->id; ?>" />
-			<input type="hidden" name="product_id" value="<?php echo esc_attr( $post->ID ); ?>" />
+			<input type="hidden" name="add-to-cart" value="<?php echo absint( $product->id ); ?>" />
+			<input type="hidden" name="product_id" value="<?php echo absint( $product->id ); ?>" />
 			<input type="hidden" name="variation_id" class="variation_id" value="" />
 
 			<?php do_action( 'woocommerce_after_single_variation' ); ?>
