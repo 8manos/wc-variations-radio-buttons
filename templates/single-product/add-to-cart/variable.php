@@ -4,7 +4,7 @@
  *
  * @author  WooThemes
  * @package WooCommerce/Templates
- * @version 2.4.0
+ * @version 2.5.0
  *
  * Modified to use radio buttons instead of dropdowns
  * @author 8manos
@@ -31,7 +31,7 @@ $attribute_keys = array_keys( $attributes );
 
 do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 
-<form class="variations_form cart" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->id ); ?>" data-product_variations="<?php echo esc_attr( json_encode( $available_variations ) ) ?>">
+<form class="variations_form cart" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->id ); ?>" data-product_variations="<?php echo htmlspecialchars( json_encode( $available_variations ) ) ?>">
 	<?php do_action( 'woocommerce_before_variations_form' ); ?>
 
 	<?php if ( empty( $available_variations ) && false !== $available_variations ) : ?>
@@ -72,7 +72,7 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 								}
 							}
 
-							echo end( $attribute_keys ) === $name ? '<a class="reset_variations" href="#">' . __( 'Clear selection', 'woocommerce' ) . '</a>' : '';
+							echo end( $attribute_keys ) === $name ? apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#">' . __( 'Clear', 'woocommerce' ) . '</a>' ) : '';
 							?>
 						</td>
 					</tr>
@@ -82,22 +82,20 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 
 		<?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
 
-		<div class="single_variation_wrap" style="display:none;">
+		<div class="single_variation_wrap">
 			<?php do_action( 'woocommerce_before_single_variation' ); ?>
 
-			<div class="single_variation"></div>
+			<div class="woocommerce-variation single_variation"></div>
 
-			<div class="variations_button">
-
-				<?php woocommerce_quantity_input( array(
-					'input_value' => ( isset( $_POST['quantity'] ) ? wc_stock_amount( $_POST['quantity'] ) : 1 )
-				) ); ?>
-				<button type="submit" class="single_add_to_cart_button button alt"><?php echo $product->single_add_to_cart_text(); ?></button>
+			<div class="woocommerce-variation-add-to-cart variations_button">
+				<?php if ( ! $product->is_sold_individually() ) : ?>
+					<?php woocommerce_quantity_input( array( 'input_value' => isset( $_POST['quantity'] ) ? wc_stock_amount( $_POST['quantity'] ) : 1 ) ); ?>
+				<?php endif; ?>
+				<button type="submit" class="single_add_to_cart_button button alt"><?php echo esc_html( $product->single_add_to_cart_text() ); ?></button>
+				<input type="hidden" name="add-to-cart" value="<?php echo absint( $product->id ); ?>" />
+				<input type="hidden" name="product_id" value="<?php echo absint( $product->id ); ?>" />
+				<input type="hidden" name="variation_id" class="variation_id" value="0" />
 			</div>
-
-			<input type="hidden" name="add-to-cart" value="<?php echo absint( $product->id ); ?>" />
-			<input type="hidden" name="product_id" value="<?php echo absint( $product->id ); ?>" />
-			<input type="hidden" name="variation_id" class="variation_id" value="" />
 
 			<?php do_action( 'woocommerce_after_single_variation' ); ?>
 		</div>

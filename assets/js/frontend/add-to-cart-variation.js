@@ -7,12 +7,17 @@
 
 	$.fn.wc_variation_form = function() {
 		var $form               = this;
-		var $product            = $form.closest('.product');
+		var $single_variation   = $form.find( '.single_variation' );
+		var $product            = $form.closest( '.product' );
 		var $product_id         = parseInt( $form.data( 'product_id' ), 10 );
 		var $product_variations = $form.data( 'product_variations' );
 		var $use_ajax           = $product_variations === false;
 		var $xhr                = false;
 		var $reset_variations   = $form.find( '.reset_variations' );
+		var $single_variation_wrap = $form.find( '.single_variation_wrap' );
+
+		// Always visible since 2.5.0
+		$single_variation_wrap.show();
 
 		// Unbind any existing events
 		$form.unbind( 'check_variations update_variation_values found_variation' );
@@ -24,9 +29,25 @@
 
 		// On clicking the reset variation button
 		.on( 'click', '.reset_variations', function() {
+			event.preventDefault();
 			$form.find( '.variations input[type=radio]:checked' ).removeAttr('checked').change();
 			$form.trigger( 'reset_data' );
-			return false;
+		} )
+
+		// When the variation is hidden
+		.on( 'hide_variation', function( event ) {
+			event.preventDefault();
+			$form.find( '.single_add_to_cart_button' ).attr( 'disabled', 'disabled' ).attr( 'title', wc_add_to_cart_variation_params.i18n_make_a_selection_text );
+		} )
+
+		// When the variation is revealed
+		.on( 'show_variation', function( event, variation, purchasable ) {
+			event.preventDefault();
+			if ( purchasable ) {
+				$form.find( '.single_add_to_cart_button' ).removeAttr( 'disabled' ).removeAttr( 'title' );
+			} else {
+				$form.find( '.single_add_to_cart_button' ).attr( 'disabled', 'disabled' ).attr( 'title', wc_add_to_cart_variation_params.i18n_unavailable_text );
+			}
 		} )
 
 		// Reload product variations data
@@ -50,7 +71,7 @@
 			});
 			$form.wc_variations_description_update( '' );
 			$form.trigger( 'reset_image' );
-			$form.find( '.single_variation_wrap' ).slideUp( 200 ).trigger( 'hide_variation' );
+			$single_variation.slideUp( 200 ).trigger( 'hide_variation' );
 		} )
 
 		// Reset product image
@@ -129,7 +150,7 @@
 								$form.trigger( 'found_variation', [ variation ] );
 							} else {
 								$form.trigger( 'reset_data' );
-								$form.find( '.single_variation_wrap' ).after( '<p class="wc-no-matching-variations woocommerce-info">' + wc_add_to_cart_variation_params.i18n_no_matching_variations_text + '</p>' );
+								$form.find( '.single_variation' ).after( '<p class="wc-no-matching-variations woocommerce-info">' + wc_add_to_cart_variation_params.i18n_no_matching_variations_text + '</p>' );
 								$form.find( '.wc-no-matching-variations' ).slideDown( 200 );
 							}
 						}
@@ -149,6 +170,9 @@
 				$form.trigger( 'check_variations', [ '', false ] );
 			}
 
+			// added to get around variation image flicker issue
+			$( '.product.has-default-attributes > .images' ).fadeTo( 200, 1 );
+
 			// Custom event for when variation selection has been changed
 			$form.trigger( 'woocommerce_variation_has_changed' );
 		} )
@@ -167,8 +191,6 @@
 				variation_link  = variation.image_link,
 				variation_caption = variation.image_caption,
 				variation_title = variation.image_title;
-
-			$form.find( '.single_variation' ).html( variation.price_html + variation.availability_html );
 
 			if ( o_src === undefined ) {
 				o_src = ( ! $product_img.attr( 'src' ) ) ? '' : $product_img.attr( 'src' );
@@ -222,10 +244,11 @@
 					.attr( 'title', o_title );
 			}
 
-			var $single_variation_wrap = $form.find( '.single_variation_wrap' ),
-				$sku = $product.find( '.product_meta' ).find( '.sku' ),
-				$weight = $product.find( '.product_weight' ),
-				$dimensions = $product.find( '.product_dimensions' );
+			var $sku        = $product.find( '.product_meta' ).find( '.sku' );
+			var $weight     = $product.find( '.product_weight' );
+			var $dimensions = $product.find( '.product_dimensions' );
+			var $qty        = $single_variation_wrap.find( '.quantity' );
+			var purchasable = true;
 
 			if ( ! $sku.attr( 'data-o_sku' ) ) {
 				$sku.attr( 'data-o_sku', $sku.text() );
@@ -257,63 +280,30 @@
 				$dimensions.text( $dimensions.attr( 'data-o_dimensions' ) );
 			}
 
-			var hide_qty        = false;
-			var hide_qty_button = false;
-
-			if ( ! variation.is_purchasable || ! variation.is_in_stock || ! variation.variation_is_visible ) {
-				hide_qty_button = true;
-			}
-
 			if ( ! variation.variation_is_visible ) {
-				$form.find( '.single_variation' ).html( '<p>' + wc_add_to_cart_variation_params.i18n_unavailable_text + '</p>' );
-			}
-
-			if ( variation.min_qty !== '' ) {
-				$single_variation_wrap.find( '.quantity input.qty' ).attr( 'min', variation.min_qty ).val( variation.min_qty );
+				$single_variation.html( '<p>' + wc_add_to_cart_variation_params.i18n_unavailable_text + '</p>' );
 			} else {
-				$single_variation_wrap.find( '.quantity input.qty' ).removeAttr( 'min' );
+				$single_variation.html( variation.price_html + variation.availability_html );
 			}
 
-			if ( variation.max_qty !== '' ) {
-				$single_variation_wrap.find( '.quantity input.qty' ).attr( 'max', variation.max_qty );
-			} else {
-				$single_variation_wrap.find( '.quantity input.qty' ).removeAttr( 'max' );
-			}
-
+			// Hide or show qty input
 			if ( variation.is_sold_individually === 'yes' ) {
-				$single_variation_wrap.find( '.quantity input.qty' ).val( '1' );
-				hide_qty = true;
+				$qty.find( 'input.qty' ).val( '1' ).attr( 'min', '1' ).attr( 'max', '' );
+				$qty.hide();
+			} else {
+				$qty.find( 'input.qty' ).attr( 'min', variation.min_qty ).attr( 'max', variation.max_qty );
+				$qty.show();
 			}
 
-			// Show/hide qty container
-			if ( hide_qty ) {
-				$single_variation_wrap.find( '.quantity' ).hide();
-			} else {
-				// No need to hide it when hiding its container
-				if ( ! hide_qty_button ) {
-					$single_variation_wrap.find( '.quantity' ).show();
-				}
-			}
-
-			// Show/hide qty & button container
-			if ( hide_qty_button ) {
-				if ( $single_variation_wrap.is( ':visible' ) ) {
-					$form.find( '.variations_button' ).slideUp( 200 );
-				} else {
-					$form.find( '.variations_button' ).hide();
-				}
-			} else {
-				if ( $single_variation_wrap.is( ':visible' ) ) {
-					$form.find( '.variations_button' ).slideDown( 200 );
-				} else {
-					$form.find( '.variations_button' ).show();
-				}
+			// Enable or disable the add to cart button
+			if ( ! variation.is_purchasable || ! variation.is_in_stock || ! variation.variation_is_visible ) {
+				purchasable = false;
 			}
 
 			// Refresh variation description
 			$form.wc_variations_description_update( variation.variation_description );
 
-			$single_variation_wrap.slideDown( 200 ).trigger( 'show_variation', [ variation ] );
+			$single_variation.slideDown( 200 ).trigger( 'show_variation', [ variation, purchasable ] );
 		})
 
 		// Check variations
@@ -378,7 +368,7 @@
 				}
 
 				if ( ! exclude ) {
-					$form.find( '.single_variation_wrap' ).slideUp( 200 ).trigger( 'hide_variation' );
+					$single_variation.slideUp( 200 ).trigger( 'hide_variation' );
 				}
 			}
 			if ( some_attributes_chosen ) {
