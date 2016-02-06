@@ -28,7 +28,7 @@
 		$form
 
 		// On clicking the reset variation button
-		.on( 'click', '.reset_variations', function() {
+		.on( 'click', '.reset_variations', function( event ) {
 			event.preventDefault();
 			$form.find( '.variations input[type=radio]:checked' ).removeAttr('checked').change();
 			$form.trigger( 'reset_data' );
