@@ -4,7 +4,7 @@ Donate link: mailto:paypal@8manos.com
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
 Requires at least: 4.1
 Tested up to: 4.4
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 WC requires at least: 2.4
 WC tested up to: 2.5.2
 License: GPLv2 or later
@@ -35,6 +35,9 @@ Contribute at https://github.com/8manos/wc-variations-radio-buttons
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.1.3 =
+* Fixes clear button that got screwed on last version.
 
 = 1.1.2 =
 * Updated to match changes in WooCommerce 2.5.
