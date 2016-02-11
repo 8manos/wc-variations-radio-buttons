@@ -12,9 +12,11 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-// Check if WooCommerce is active
-if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
+// Check if WooCommerce is active
+if ( is_plugin_active( 'woocommerce/woocommerce.php') ) {
+    
 	class WC_Radio_Buttons {
 
 		private $plugin_path;
