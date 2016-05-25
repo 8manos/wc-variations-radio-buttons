@@ -3,10 +3,10 @@ Contributors: mantish
 Donate link: mailto:paypal@8manos.com
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
 Requires at least: 4.1
-Tested up to: 4.4
-Stable tag: 1.1.3
+Tested up to: 4.5.3
+Stable tag: 1.1.4
 WC requires at least: 2.4
-WC tested up to: 2.5.2
+WC tested up to: 2.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,9 @@ Contribute at https://github.com/8manos/wc-variations-radio-buttons
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.1.4 =
+* Avoid overwriting of custom add-to-cart button.
 
 = 1.1.3 =
 * Fixes clear button that got screwed on last version.
