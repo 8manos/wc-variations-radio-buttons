@@ -23,7 +23,7 @@ if ( ! function_exists( 'print_attribute_radio' ) ) {
 		$esc_value = esc_attr( $value );
 		$id = esc_attr( $name . '_v_' . $value );
 		$filtered_label = apply_filters( 'woocommerce_variation_option_name', $label );
-		printf( '<div><input type="radio" name="%1$s" value="%2$s" id="%3$s" %4$s><label for="%3$s">%5$s</label></div>', $input_name, $esc_value, $id, $checked, $filtered_label );
+		printf( '<div class="variations-data"><input type="radio" name="%1$s" value="%2$s" id="%3$s" %4$s class="variations-radio"><label for="%3$s" class="variations-label">%5$s</label></div>', $input_name, $esc_value, $id, $checked, $filtered_label );
 	}
 }
 
@@ -40,10 +40,10 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 		<p class="stock out-of-stock"><?php _e( 'This product is currently out of stock and unavailable.', 'woocommerce' ); ?></p>
 	<?php else : ?>
 		<table class="variations" cellspacing="0">
-			<tbody>
+			<tbody class="variations-tbody">
 				<?php foreach ( $attributes as $name => $options ) : ?>
-					<tr>
-						<td class="label"><label for="<?php echo sanitize_title( $name ); ?>"><?php echo wc_attribute_label( $name ); ?></label></td>
+					<tr class="variations-head">
+						<td class="label"><label for="<?php echo sanitize_title( $name ); ?>"><?php echo wc_attribute_label( $name ); ?></label></td></tr><tr class="variations-row">
 						<?php
 						$sanitized_name = sanitize_title( $name );
 						if ( isset( $_REQUEST[ 'attribute_' . $sanitized_name ] ) ) {
