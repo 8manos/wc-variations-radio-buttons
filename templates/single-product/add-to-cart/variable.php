@@ -33,7 +33,7 @@ $attribute_keys = array_keys( $attributes );
 
 do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 
-<form class="variations_form cart" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->id ); ?>" data-product_variations="<?php echo htmlspecialchars( json_encode( $available_variations ) ) ?>">
+<form class="variations_form cart" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo htmlspecialchars( wp_json_encode( $available_variations ) ) ?>">
 	<?php do_action( 'woocommerce_before_variations_form' ); ?>
 
 	<?php if ( empty( $available_variations ) && false !== $available_variations ) : ?>
@@ -59,7 +59,7 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 							if ( ! empty( $options ) ) {
 								if ( taxonomy_exists( $name ) ) {
 									// Get terms if this is a taxonomy - ordered. We need the names too.
-									$terms = wc_get_product_terms( $product->id, $name, array( 'fields' => 'all' ) );
+									$terms = wc_get_product_terms( $product->get_id(), $name, array( 'fields' => 'all' ) );
 
 									foreach ( $terms as $term ) {
 										if ( ! in_array( $term->slug, $options ) ) {
@@ -100,8 +100,8 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 						<?php woocommerce_quantity_input( array( 'input_value' => isset( $_POST['quantity'] ) ? wc_stock_amount( $_POST['quantity'] ) : 1 ) ); ?>
 					<?php endif; ?>
 					<button type="submit" class="single_add_to_cart_button button alt otto"><?php echo esc_html( $product->single_add_to_cart_text() ); ?></button>
-					<input type="hidden" name="add-to-cart" value="<?php echo absint( $product->id ); ?>" />
-					<input type="hidden" name="product_id" value="<?php echo absint( $product->id ); ?>" />
+					<input type="hidden" name="add-to-cart" value="<?php echo absint( $product->get_id() ); ?>" />
+					<input type="hidden" name="product_id" value="<?php echo absint( $product->get_id() ); ?>" />
 					<input type="hidden" name="variation_id" class="variation_id" value="0" />
 				</div>
 			<?php } ?>
