@@ -2,11 +2,11 @@
 Contributors: mantish
 Donate link: mailto:paypal@8manos.com
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
-Requires at least: 4.1
-Tested up to: 4.7
-Stable tag: 1.1.5
-WC requires at least: 2.4
-WC tested up to: 2.6.4
+Requires at least: 4.4
+Tested up to: 4.7.4
+Stable tag: 2.0.0
+WC requires at least: 3.0
+WC tested up to: 3.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -27,14 +27,14 @@ Then copy plugins/wc-variations-radio-buttons/templates/single-product/add-to-ca
 
 ### Github
 
-Contribute at https://github.com/8manos/wc-variations-radio-buttons
-
-== Installation ==
-
-1. Upload to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
+Source code and contributions at [github](https://github.com/8manos/wc-variations-radio-buttons)
 
 == Changelog ==
+
+= 2.0.0 =
+* Updated to match changes in WooCommerce 3.0.
+* This version is not compatible with WooCommerce 2.x.
+* Fix issues with the variation image not changing.
 
 = 1.1.5 =
 * Fix error when using product_page WooCommerce shortcode.
