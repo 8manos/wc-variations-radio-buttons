@@ -5,7 +5,8 @@
 	 */
 	var VariationForm = function( $form ) {
 		this.$form                = $form;
-		this.$attributeFields     = $form.find( '.variations select' );
+		this.$attributeGroups     = $form.find( '.variations .value' );
+		this.$attributeFields     = $form.find( '.variations input[type=radio]' );
 		this.$singleVariation     = $form.find( '.single_variation' ),
 		this.$singleVariationWrap = $form.find( '.single_variation_wrap' );
 		this.$resetVariations     = $form.find( '.reset_variations' );
@@ -34,7 +35,7 @@
 		$form.on( 'click', '.single_add_to_cart_button', { variationForm: this }, this.onAddToCart );
 		$form.on( 'reset_data', { variationForm: this }, this.onResetDisplayedVariation );
 		$form.on( 'reset_image', { variationForm: this }, this.onResetImage );
-		$form.on( 'change', '.variations select', { variationForm: this }, this.onChange );
+		$form.on( 'change', '.variations input[type=radio]', { variationForm: this }, this.onChange );
 		$form.on( 'found_variation', { variationForm: this }, this.onFoundVariation );
 		$form.on( 'check_variations', { variationForm: this }, this.onFindVariation );
 		$form.on( 'update_variation_values', { variationForm: this }, this.onUpdateAttributes );
@@ -49,7 +50,7 @@
 	 */
 	VariationForm.prototype.onReset = function( event ) {
 		event.preventDefault();
-		event.data.variationForm.$attributeFields.val( '' ).change();
+		event.data.variationForm.$attributeFields.removeAttr('checked').change();
 		event.data.variationForm.$form.trigger( 'reset_data' );
 	};
 
@@ -121,7 +122,7 @@
 	};
 
 	/**
-	 * Looks for matching variations for current selected attributes.
+	 * Looks for matching variations for current checked attributes.
 	 */
 	VariationForm.prototype.onFindVariation = function( event ) {
 		var form              = event.data.variationForm,
@@ -292,30 +293,13 @@
 			return;
 		}
 
-		// Loop through selects and disable/enable options based on selections.
-		form.$attributeFields.each( function( index, el ) {
-			var current_attr_select     = $( el ),
-				current_attr_name       = current_attr_select.data( 'attribute_name' ) || current_attr_select.attr( 'name' ),
-				show_option_none        = $( el ).data( 'show_option_none' ),
-				option_gt_filter        = ':gt(0)',
-				attached_options_count  = 0,
-				new_attr_select         = $( '<select/>' ),
-				selected_attr_val       = current_attr_select.val() || '',
-				selected_attr_val_valid = true;
+		// Loop through radio buttons and disable/enable based on selections.
+		form.$attributeGroups.each( function( index, el ) {
+			var current_attr      = $( el ),
+				$fields           = current_attr.find( 'input[type=radio]' ),
+				current_attr_name = $fields.data( 'attribute_name' ) || $fields.attr( 'name' );
 
-			// Reference options set at first.
-			if ( ! current_attr_select.data( 'attribute_html' ) ) {
-				var refSelect = current_attr_select.clone();
-
-				refSelect.find( 'option' ).removeAttr( 'disabled attached' ).removeAttr( 'selected' );
-
-				current_attr_select.data( 'attribute_options', refSelect.find( 'option' + option_gt_filter ).get() ); // Legacy data attribute.
-				current_attr_select.data( 'attribute_html', refSelect.html() );
-			}
-
-			new_attr_select.html( current_attr_select.data( 'attribute_html' ) );
-
-			// The attribute of this select field should not be taken into account when calculating its matching variations:
+			// The attribute of this radio button should not be taken into account when calculating its matching variations:
 			// The constraints of this attribute are shaped by the values of the other attributes.
 			var checkAttributes = $.extend( true, {}, currentAttributes );
 
@@ -323,72 +307,27 @@
 
 			var variations = form.findMatchingVariations( form.variationData, checkAttributes );
 
+			$fields.attr( 'disabled', 'disabled' );
+
 			// Loop through variations.
 			for ( var num in variations ) {
-				if ( typeof( variations[ num ] ) !== 'undefined' ) {
+				if ( typeof( variations[ num ] ) !== 'undefined' && variations[ num ].variation_is_active ) {
 					var variationAttributes = variations[ num ].attributes;
 
 					for ( var attr_name in variationAttributes ) {
-						if ( variationAttributes.hasOwnProperty( attr_name ) ) {
-							var attr_val         = variationAttributes[ attr_name ],
-								variation_active = '';
+						if ( variationAttributes.hasOwnProperty( attr_name ) && attr_name === current_attr_name  ) {
+							var attr_val = variationAttributes[ attr_name ];
 
-							if ( attr_name === current_attr_name ) {
-								if ( variations[ num ].variation_is_active ) {
-									variation_active = 'enabled';
-								}
-
-								if ( attr_val ) {
-									// Decode entities and add slashes.
-									attr_val = $( '<div/>' ).html( attr_val ).text();
-
-									// Attach.
-									new_attr_select.find( 'option[value="' + form.addSlashes( attr_val ) + '"]' ).addClass( 'attached ' + variation_active );
-								} else {
-									// Attach all apart from placeholder.
-									new_attr_select.find( 'option:gt(0)' ).addClass( 'attached ' + variation_active );
-								}
+							if ( attr_val ) {
+								// Remove disabled.
+								$fields.filter( '[value="' + form.addSlashes( attr_val ) + '"]' ).removeAttr( 'disabled' );
+							} else {
+								// Enable all radio buttons of attribute.
+								$fields.removeAttr( 'disabled' );
 							}
 						}
 					}
 				}
-			}
-
-			// Count available options.
-			attached_options_count = new_attr_select.find( 'option.attached' ).length;
-
-			// Check if current selection is in attached options.
-			if ( selected_attr_val && ( attached_options_count === 0 || new_attr_select.find( 'option.attached.enabled[value="' + form.addSlashes( selected_attr_val ) + '"]' ).length === 0 ) ) {
-				selected_attr_val_valid = false;
-			}
-
-			// Detach the placeholder if:
-			// - Valid options exist.
-			// - The current selection is non-empty.
-			// - The current selection is valid.
-			// - Placeholders are not set to be permanently visible.
-			if ( attached_options_count > 0 && selected_attr_val && selected_attr_val_valid && ( 'no' === show_option_none ) ) {
-				new_attr_select.find( 'option:first' ).remove();
-				option_gt_filter = '';
-			}
-
-			// Detach unattached.
-			new_attr_select.find( 'option' + option_gt_filter + ':not(.attached)' ).remove();
-
-			// Finally, copy to DOM and set value.
-			current_attr_select.html( new_attr_select.html() );
-			current_attr_select.find( 'option' + option_gt_filter + ':not(.enabled)' ).prop( 'disabled', true );
-
-			// Choose selected value.
-			if ( selected_attr_val ) {
-				// If the previously selected value is no longer available, fall back to the placeholder (it's going to be there).
-				if ( selected_attr_val_valid ) {
-					current_attr_select.val( selected_attr_val );
-				} else {
-					current_attr_select.val( '' ).change();
-				}
-			} else {
-				current_attr_select.val( '' ); // No change event to prevent infinite loop.
 			}
 		});
 
@@ -405,9 +344,11 @@
 		var count  = 0;
 		var chosen = 0;
 
-		this.$attributeFields.each( function() {
-			var attribute_name = $( this ).data( 'attribute_name' ) || $( this ).attr( 'name' );
-			var value          = $( this ).val() || '';
+		this.$attributeGroups.each( function() {
+			var $fields = $( this ).find( 'input[type=radio]' );
+
+			var attribute_name = $fields.data( 'attribute_name' ) || $fields.attr( 'name' );
+			var value          = $fields.filter(':checked').val() || '';
 
 			if ( value.length > 0 ) {
 				chosen ++;
