@@ -22,7 +22,7 @@ if ( ! function_exists( 'print_attribute_radio' ) ) {
 
 		$input_name = 'attribute_' . esc_attr( $name ) ;
 		$esc_value = esc_attr( $value );
-		$id = esc_attr( $name . '_v_' . $value . $product->id ); //added product ID at the end of the name to target single products
+		$id = esc_attr( $name . '_v_' . $value . $product->get_id() ); //added product ID at the end of the name to target single products
 		$filtered_label = apply_filters( 'woocommerce_variation_option_name', $label );
 		printf( '<div><input type="radio" name="%1$s" value="%2$s" id="%3$s" %4$s><label for="%3$s">%5$s</label></div>', $input_name, $esc_value, $id, $checked, $filtered_label );
 	}
