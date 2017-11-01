@@ -80,8 +80,11 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php') ) {
 		}
 
 		function load_scripts() {
-			wp_deregister_script( 'wc-add-to-cart-variation' );
-			wp_register_script( 'wc-add-to-cart-variation', $this->get_plugin_url() . 'assets/js/frontend/add-to-cart-variation.js', array( 'jquery', 'wp-util' ), self::VERSION );
+			// Don't load JS if current product type is bundle to prevent the page from not working
+			if (!(wc_get_product() && wc_get_product()->is_type('bundle'))) {
+				wp_deregister_script( 'wc-add-to-cart-variation' );
+				wp_register_script( 'wc-add-to-cart-variation', $this->get_plugin_url() . 'assets/js/frontend/add-to-cart-variation.js', array( 'jquery', 'wp-util' ), self::VERSION );
+			}
 		}
 	}
 
