@@ -3,10 +3,10 @@ Contributors: mantish
 Donate link: mailto:paypal@8manos.com
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
 Requires at least: 4.4
-Tested up to: 4.9.1
-Stable tag: 2.0.0
+Tested up to: 4.9.2
+Stable tag: 2.0.1
 WC requires at least: 3.0
-WC tested up to: 3.2.4
+WC tested up to: 3.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,14 @@ Then copy plugins/wc-variations-radio-buttons/templates/single-product/add-to-ca
 Source code and contributions at [github](https://github.com/8manos/wc-variations-radio-buttons)
 
 == Changelog ==
+
+= 2.0.1 =
+* Fix issues in archive pages, where multiple products are present.
+* Fix several issues with the gallery.
+* Fix product dimensions and weight.
+* Radio buttons disabled for product bundles.
+* Add class so each attribute can be styled.
+* Add the attribute name to the `woocommerce_variation_option_name` filter.
 
 = 2.0.0 =
 * Updated to match changes in WooCommerce 3.0.
