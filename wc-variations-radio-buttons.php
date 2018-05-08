@@ -99,7 +99,34 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php') ) {
 			$id = esc_attr( $name . '_v_' . $value . $product->get_id() ); //added product ID at the end of the name to target single products
 			$checked = checked( $checked_value, $value, false );
 			$filtered_label = apply_filters( 'woocommerce_variation_option_name', $label, esc_attr( $name ) );
-			printf( '<div><input type="radio" name="%1$s" value="%2$s" id="%3$s" %4$s><label for="%3$s">%5$s</label></div>', $input_name, $esc_value, $id, $checked, $filtered_label );
+
+			$price_html = '';
+
+			$variations = $product->get_available_variations();
+
+			// Let's find which variation is this
+			foreach ($variations as $var_arr) {
+				if (empty($var_arr['attributes'])) {
+					continue;
+				}
+
+				$all_attribs_ser = serialize($var_arr['attributes']);
+
+				// We want exact match of the variation label: Developer (Unlimited Domains)
+				// We don't want to check all the attributes
+				if (strpos($all_attribs_ser, $value) !== false) {
+					$variation_id = $var_arr['variation_id'];
+					$product_variation = new WC_Product_Variation($variation_id);
+					$price_html = $product_variation->get_price_html();
+					break;
+				}
+			}
+
+			if (!empty($price_html)) {
+				$filtered_label .= ' - ' . $price_html;
+			}
+
+			printf( '<div><input type="radio" name="%1$s" value="%2$s" id="%3$s" %4$s><label for="%3$s"> %5$s</label></div>', $input_name, $esc_value, $id, $checked, $filtered_label );
 		}
 	}
 }

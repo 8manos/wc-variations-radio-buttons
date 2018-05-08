@@ -37,6 +37,8 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 							$checked_value = $_REQUEST[ 'attribute_' . $sanitized_name ];
 						} elseif ( isset( $selected_attributes[ $sanitized_name ] ) ) {
 							$checked_value = $selected_attributes[ $sanitized_name ];
+						} elseif (!empty($options[0])) {
+							$checked_value = $options[0]; // select first opt
 						} else {
 							$checked_value = '';
 						}
@@ -61,7 +63,7 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 								}
 							}
 
-							echo end( $attribute_keys ) === $name ? apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#">' . __( 'Clear', 'woocommerce' ) . '</a>' ) : '';
+							//echo end( $attribute_keys ) === $name ? apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#">' . __( 'Clear', 'woocommerce' ) . '</a>' ) : '';
 							?>
 						</td>
 					</tr>
