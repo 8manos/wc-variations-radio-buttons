@@ -4,35 +4,34 @@
  *
  * @author  WooThemes
  * @package WooCommerce/Templates
- * @version 2.5.0
+ * @version 3.4.1
  *
  * Modified to use radio buttons instead of dropdowns
  * @author 8manos
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined( 'ABSPATH' ) || exit;
 
 global $product;
+global $woocommerce;
 
 $attribute_keys = array_keys( $attributes );
 
 do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 
-<form class="variations_form cart" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo htmlspecialchars( wp_json_encode( $available_variations ) ) ?>">
+<form class="variations_form cart" action="<?php echo esc_url( apply_filters( 'woocommerce_add_to_cart_form_action', $product->get_permalink() ) ); ?>" method="post" enctype='multipart/form-data' data-product_id="<?php echo absint( $product->get_id() ); ?>" data-product_variations="<?php echo htmlspecialchars( wp_json_encode( $available_variations ) ) ?>">
 	<?php do_action( 'woocommerce_before_variations_form' ); ?>
 
 	<?php if ( empty( $available_variations ) && false !== $available_variations ) : ?>
-		<p class="stock out-of-stock"><?php _e( 'This product is currently out of stock and unavailable.', 'woocommerce' ); ?></p>
+		<p class="stock out-of-stock"><?php esc_html_e( 'This product is currently out of stock and unavailable.', 'woocommerce' ); ?></p>
 	<?php else : ?>
 		<table class="variations" cellspacing="0">
 			<tbody>
 				<?php foreach ( $attributes as $name => $options ) : ?>
-					<tr class="attribute-<?php echo sanitize_title($name); ?>">
-						<td class="label"><label for="<?php echo sanitize_title( $name ); ?>"><?php echo wc_attribute_label( $name ); ?></label></td>
+					<?php $sanitized_name = sanitize_title( $name ); ?>
+					<tr class="attribute-<?php echo esc_attr( $sanitized_name ); ?>">
+						<td class="label"><label for="<?php echo esc_attr( $sanitized_name ); ?>"><?php echo wc_attribute_label( $name ); ?></label></td>
 						<?php
-						$sanitized_name = sanitize_title( $name );
 						if ( isset( $_REQUEST[ 'attribute_' . $sanitized_name ] ) ) {
 							$checked_value = $_REQUEST[ 'attribute_' . $sanitized_name ];
 						} elseif ( isset( $selected_attributes[ $sanitized_name ] ) ) {
@@ -61,7 +60,7 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 								}
 							}
 
-							echo end( $attribute_keys ) === $name ? apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#">' . __( 'Clear', 'woocommerce' ) . '</a>' ) : '';
+							echo end( $attribute_keys ) === $name ? wp_kses_post( apply_filters( 'woocommerce_reset_variations_link', '<a class="reset_variations" href="#">' . esc_html__( 'Clear', 'woocommerce' ) . '</a>' ) ) : '';
 							?>
 						</td>
 					</tr>
@@ -69,7 +68,11 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 			</tbody>
 		</table>
 
-		<?php do_action( 'woocommerce_before_add_to_cart_button' ); ?>
+		<?php
+			if ( version_compare($woocommerce->version, '3.4.0') < 0 ) {
+				do_action( 'woocommerce_before_add_to_cart_button' );
+			}
+		?>
 
 		<div class="single_variation_wrap">
 			<?php
@@ -79,7 +82,11 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 			?>
 		</div>
 
-		<?php do_action( 'woocommerce_after_add_to_cart_button' ); ?>
+		<?php
+			if ( version_compare($woocommerce->version, '3.4.0') < 0 ) {
+				do_action( 'woocommerce_after_add_to_cart_button' );
+			}
+		?>
 	<?php endif; ?>
 
 	<?php do_action( 'woocommerce_after_variations_form' ); ?>
