@@ -3,8 +3,8 @@ Contributors: mantish
 Donate link: mailto:paypal@8manos.com
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
 Requires at least: 4.4
-Tested up to: 4.9.9
-Stable tag: 2.0.2
+Tested up to: 5.5
+Stable tag: 2.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,9 @@ Then copy plugins/wc-variations-radio-buttons/templates/single-product/add-to-ca
 Source code and contributions at [github](https://github.com/8manos/wc-variations-radio-buttons)
 
 == Changelog ==
+
+= 2.0.3 =
+* Small UI performance improvement.
 
 = 2.0.2 =
 * Template file updated to match changes in WooCommerce 3.4.
