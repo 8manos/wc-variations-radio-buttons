@@ -51,7 +51,7 @@
 	 */
 	VariationForm.prototype.onReset = function( event ) {
 		event.preventDefault();
-		event.data.variationForm.$attributeFields.removeAttr('checked').change();
+		event.data.variationForm.$attributeFields.prop( 'checked', false ).change();
 		event.data.variationForm.$form.trigger( 'reset_data' );
 	};
 
