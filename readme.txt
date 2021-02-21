@@ -1,10 +1,10 @@
 === WC Variations Radio Buttons ===
-Contributors: mantish
+Contributors: mantish, mariankadanka
 Donate link: mailto:paypal@8manos.com
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
 Requires at least: 4.4
-Tested up to: 5.6
-Stable tag: 2.0.4
+Tested up to: 5.7
+Stable tag: 2.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,8 +29,8 @@ Source code and contributions at [github](https://github.com/8manos/wc-variation
 
 == Changelog ==
 
-= 2.0.3 =
-* Small UI performance improvement.
+= 2.0.5 =
+* Improve compatibility with WordPress 5.5+ by removing depreacted jQuery methods.
 
 = 2.0.2 =
 * Template file updated to match changes in WooCommerce 3.4.
