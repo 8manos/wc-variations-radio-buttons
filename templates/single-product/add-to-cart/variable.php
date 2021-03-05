@@ -30,7 +30,16 @@ do_action( 'woocommerce_before_add_to_cart_form' ); ?>
 				<?php foreach ( $attributes as $name => $options ) : ?>
 					<?php $sanitized_name = sanitize_title( $name ); ?>
 					<tr class="attribute-<?php echo esc_attr( $sanitized_name ); ?>">
-						<td class="label"><label for="<?php echo esc_attr( $sanitized_name ); ?>"><?php echo wc_attribute_label( $name ); ?></label></td>
+						<td class="label">
+							<?php
+                    					$attribute_name_label_html = '<label for="' . esc_attr( $sanitized_name ) . '">' . wc_attribute_label( $name ) . '</label>';
+                    					echo wp_kses_post( apply_filters(
+								'wc_variations_radio_buttons_attribute_name_label',
+								 $attribute_name_label_html,
+								 $name,
+								 $options ) );
+                    					?>
+						</td>
 						<?php
 						if ( isset( $_REQUEST[ 'attribute_' . $sanitized_name ] ) ) {
 							$checked_value = $_REQUEST[ 'attribute_' . $sanitized_name ];
