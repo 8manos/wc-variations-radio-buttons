@@ -10,7 +10,7 @@
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  *
  * WC requires at least: 3.0
- * WC tested up to:      5.1
+ * WC tested up to:      5.5
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
