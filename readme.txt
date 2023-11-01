@@ -3,8 +3,8 @@ Contributors: mantish, mariankadanka
 Donate link: mailto:paypal@8manos.com
 Tags: woocommerce, variations, woocommerce variations, radio buttons, variations radio, variations radio buttons
 Requires at least: 4.4
-Tested up to: 6.2
-Stable tag: 2.0.6
+Tested up to: 6.4
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,8 +29,10 @@ Source code and contributions at [github](https://github.com/8manos/wc-variation
 
 == Changelog ==
 
-= 2.0.6 =
+= 2.1.0 =
 * Add compatibility with WooCommerce HPOS feature.
+* Update template and script to match the latest in WooCommerce
+* Fix error selecting attributes of products with many variations
 
 = 2.0.5 =
 * Improve compatibility with WordPress 5.5+ by removing depreacted jQuery methods.

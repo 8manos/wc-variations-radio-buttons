@@ -3,14 +3,14 @@
  * Plugin Name: WC Variations Radio Buttons
  * Plugin URI:  https://wordpress.org/plugins/wc-variations-radio-buttons/
  * Description: Variations Radio Buttons for WooCommerce. Let your customers choose product variations using radio buttons instead of dropdowns.
- * Version:     2.0.6
+ * Version:     2.1.0
  * Author:      8manos
  * Author URI:  http://8manos.com
  * License:     GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  *
  * WC requires at least: 3.0
- * WC tested up to:      7.6
+ * WC tested up to:      8.3
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
@@ -22,7 +22,7 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 
 	class WC_Radio_Buttons {
 		// plugin version
-		const VERSION = '2.0.0';
+		const VERSION = '2.1.0';
 
 		private $plugin_path;
 		private $plugin_url;
