@@ -33,8 +33,8 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 			//js scripts
 			add_action( 'wp_enqueue_scripts', array( $this, 'load_scripts' ), 999 );
 
-            // Add HPOS compatibility
-            add_action('before_woocommerce_init', array($this, 'hposCompatibility'));
+			// Add HPOS compatibility
+			add_action('before_woocommerce_init', array($this, 'hposCompatibility'));
 		}
 
 		public function get_plugin_path() {
@@ -93,37 +93,36 @@ if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
 			}
 		}
 
-        /**
-         * Mark the plugin as compatible with the HPOS feature
-         *
-         * @return void
-         */
-        function hposCompatibility(): void {
-            if(class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class))
-                \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
-        }
+		/**
+		 * Mark the plugin as compatible with the HPOS feature
+		 *
+		 * @return void
+		 */
+		function hposCompatibility(): void {
+			if(class_exists(\Automattic\WooCommerce\Utilities\FeaturesUtil::class))
+				\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility('custom_order_tables', __FILE__, true);
+		}
 	}
 
 	new WC_Radio_Buttons();
 
 	if ( ! function_exists( 'print_attribute_radio' ) ) {
-	        function print_attribute_radio( $checked_value, $value, $label, $name, $display_price=false ) {
-	            global $product;
-	
-	            $input_name = 'attribute_' . esc_attr( $name ) ;
-	            $esc_value = esc_attr( $value );
-	            $id = esc_attr( $name . '_v_' . $value . $product->get_id() ); //added product ID at the end of the name to target single products
-	            $checked = checked( $checked_value, $value, false );
-	            $filtered_label = apply_filters( 'woocommerce_variation_option_name', $label, esc_attr( $name ) );
-	
-	            printf(
-	                '<label for="%3$s" class="selector d-block">
-	                    <input type="radio" name="%1$s" value="%2$s" id="%3$s" %4$s>
-	                    <span class="font-size-lg font-weight-normal variation-name">%5$s</span>
-	                    <small class="text-primary font-size-lg font-weight-600 variation-price">%6$s</small>
-	                </label>',
-	                $input_name, $esc_value, $id, $checked, $filtered_label, $display_price 
-	            );
+			function print_attribute_radio( $checked_value, $value, $label, $name ) {
+				global $product;
+
+				$input_name = 'attribute_' . esc_attr( $name ) ;
+				$esc_value = esc_attr( $value );
+				$id = esc_attr( $name . '_v_' . $value . $product->get_id() ); //added product ID at the end of the name to target single products
+				$checked = checked( $checked_value, $value, false );
+				$filtered_label = apply_filters( 'woocommerce_variation_option_name', $label, esc_attr( $name ) );
+
+				printf(
+					'<div>
+						<input type="radio" name="%1$s" value="%2$s" id="%3$s" %4$s>
+						<label for="%3$s">%5$s</label>
+					</div>',
+					$input_name, $esc_value, $id, $checked, $filtered_label
+				);
 		}
-    	}
+	}
 }
