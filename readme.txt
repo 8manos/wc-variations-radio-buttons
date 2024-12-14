@@ -4,7 +4,7 @@ Donate link: mailto:paypal@8manos.com
 Tags: woocommerce, variations, radio buttons, variations radio, variations radio buttons
 Requires at least: 4.4
 Tested up to: 6.7
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,6 +28,10 @@ Then copy plugins/wc-variations-radio-buttons/templates/single-product/add-to-ca
 Source code and contributions at [github](https://github.com/8manos/wc-variations-radio-buttons)
 
 == Changelog ==
+
+= 2.1.1 =
+* Fix variation not found message display
+* Update template and script to match the latest in WooCommerce
 
 = 2.1.0 =
 * Add compatibility with WooCommerce HPOS feature.
