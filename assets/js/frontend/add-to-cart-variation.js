@@ -4,47 +4,54 @@
 	 * VariationForm class which handles variation forms and attributes.
 	 */
 	var VariationForm = function( $form ) {
-		this.$form                = $form;
-		this.$attributeGroups     = $form.find( '.variations .value' );
-		this.$attributeFields     = $form.find( '.variations input[type=radio]' );
-		this.$singleVariation     = $form.find( '.single_variation' );
-		this.$singleVariationWrap = $form.find( '.single_variation_wrap' );
-		this.$resetVariations     = $form.find( '.reset_variations' );
-		this.$product             = $form.closest( '.product' );
-		this.variationData        = $form.data( 'product_variations' );
-		this.useAjax              = false === this.variationData;
-		this.xhr = false;
-		this.loading = true;
+		var self = this;
+
+		self.$form                = $form;
+		self.$attributeGroups     = $form.find( '.variations .value' );
+		self.$attributeFields     = $form.find( '.variations input[type=radio]' );
+		self.$singleVariation     = $form.find( '.single_variation' );
+		self.$singleVariationWrap = $form.find( '.single_variation_wrap' );
+		self.$resetVariations     = $form.find( '.reset_variations' );
+		self.$resetAlert          = $form.find( '.reset_variations_alert' )
+		self.$product             = $form.closest( '.product' );
+		self.variationData        = $form.data( 'product_variations' );
+		self.useAjax              = false === self.variationData;
+		self.xhr = false;
+		self.loading = true;
 
 		// Initial state.
-		this.$singleVariationWrap.show();
-		this.$form.off( '.wc-variation-form' );
+		self.$singleVariationWrap.show();
+		self.$form.off( '.wc-variation-form' );
 
 		// Methods.
-		this.getChosenAttributes    = this.getChosenAttributes.bind( this );
-		this.findMatchingVariations = this.findMatchingVariations.bind( this );
-		this.isMatch                = this.isMatch.bind( this );
-		this.toggleResetLink        = this.toggleResetLink.bind( this );
+		self.getChosenAttributes    = self.getChosenAttributes.bind( self );
+		self.findMatchingVariations = self.findMatchingVariations.bind( self );
+		self.isMatch                = self.isMatch.bind( self );
+		self.toggleResetLink        = self.toggleResetLink.bind( self );
+		self.showNoMatchingVariationsMsg = self.showNoMatchingVariationsMsg.bind( self );
 
 		// Events.
-		$form.on( 'click.wc-variation-form', '.reset_variations', { variationForm: this }, this.onReset );
-		$form.on( 'reload_product_variations', { variationForm: this }, this.onReload );
-		$form.on( 'hide_variation', { variationForm: this }, this.onHide );
-		$form.on( 'show_variation', { variationForm: this }, this.onShow );
-		$form.on( 'click', '.single_add_to_cart_button', { variationForm: this }, this.onAddToCart );
-		$form.on( 'reset_data', { variationForm: this }, this.onResetDisplayedVariation );
-		$form.on( 'reset_image', { variationForm: this }, this.onResetImage );
-		$form.on( 'change.wc-variation-form', '.variations input[type=radio]', { variationForm: this }, this.onChange );
-		$form.on( 'found_variation.wc-variation-form', { variationForm: this }, this.onFoundVariation );
-		$form.on( 'check_variations.wc-variation-form', { variationForm: this }, this.onFindVariation );
-		$form.on( 'update_variation_values.wc-variation-form', { variationForm: this }, this.onUpdateAttributes );
+		$form.on( 'click.wc-variation-form', '.reset_variations', { variationForm: self }, self.onReset );
+		$form.on( 'reload_product_variations', { variationForm: self }, self.onReload );
+		$form.on( 'hide_variation', { variationForm: self }, self.onHide );
+		$form.on( 'show_variation', { variationForm: self }, self.onShow );
+		$form.on( 'click', '.single_add_to_cart_button', { variationForm: self }, self.onAddToCart );
+		$form.on( 'reset_data', { variationForm: self }, self.onResetDisplayedVariation );
+		$form.on( 'reset_focus', { variationForm: self }, self.onResetVariationFocus );
+		$form.on( 'announce_reset', { variationForm: self }, self.onAnnounceReset );
+		$form.on( 'clear_reset_announcement', { variationForm: self }, self.onClearResetAnnouncement );
+		$form.on( 'reset_image', { variationForm: self }, self.onResetImage );
+		$form.on( 'change.wc-variation-form', '.variations input[type=radio]', { variationForm: self }, self.onChange );
+		$form.on( 'found_variation.wc-variation-form', { variationForm: self }, self.onFoundVariation );
+		$form.on( 'check_variations.wc-variation-form', { variationForm: self }, self.onFindVariation );
+		$form.on( 'update_variation_values.wc-variation-form', { variationForm: self }, self.onUpdateAttributes );
 
 		// Check variations once init.
 		// Init after gallery.
 		setTimeout( function() {
 			$form.trigger( 'check_variations' );
-			$form.trigger('wc_variation_form');
-			this.loading = false;
+			$form.trigger('wc_variation_form', self);
+			self.loading = false;
 		}, 100 );
 	};
 
@@ -53,8 +60,10 @@
 	 */
 	VariationForm.prototype.onReset = function( event ) {
 		event.preventDefault();
-		event.data.variationForm.$attributeFields.prop( 'checked', false ).change();
-		event.data.variationForm.$form.trigger( 'reset_data' );
+		event.data.variationForm.$attributeFields.prop('checked', false).change();
+		event.data.variationForm.$form.trigger('announce_reset');
+		event.data.variationForm.$form.trigger('reset_data');
+		event.data.variationForm.$form.trigger('reset_focus');
 	};
 
 	/**
@@ -130,6 +139,25 @@
 	};
 
 	/**
+	 * Announce reset to screen readers.
+	 */
+	VariationForm.prototype.onAnnounceReset = function (event) {
+		event.data.variationForm.$resetAlert.text(wc_add_to_cart_variation_params.i18n_reset_alert_text);
+	}
+
+	/**
+	 * Focus variation reset
+	 */
+	VariationForm.prototype.onResetVariationFocus = function (event) {
+		event.data.variationForm.$attributeFields[0].focus();
+	}
+
+	/** Clear reset announcement */
+	VariationForm.prototype.onClearResetAnnouncement = function (event) {
+		event.data.variationForm.$resetAlert.text('');
+	}
+
+	/**
 	 * When the product image is reset.
 	 */
 	VariationForm.prototype.onResetImage = function( event ) {
@@ -164,14 +192,7 @@
 							attributes.chosenCount = 0;
 
 							if (!form.loading) {
-								form.$form
-									.find('.single_variation')
-									.after(
-										'<p class="wc-no-matching-variations woocommerce-info">' +
-										wc_add_to_cart_variation_params.i18n_no_matching_variations_text +
-										'</p>'
-									);
-								form.$form.find('.wc-no-matching-variations').slideDown(200);
+								form.showNoMatchingVariationsMsg();
 							}
 						}
 					},
@@ -192,14 +213,7 @@
 					attributes.chosenCount = 0;
 
 					if (!form.loading) {
-						form.$form
-							.find('.single_variation')
-							.after(
-								'<p class="wc-no-matching-variations woocommerce-info">' +
-								wc_add_to_cart_variation_params.i18n_no_matching_variations_text +
-								'</p>'
-							);
-						form.$form.find('.wc-no-matching-variations').slideDown(200);
+						form.showNoMatchingVariationsMsg();
 					}
 				}
 			}
@@ -305,6 +319,7 @@
 		var form = event.data.variationForm;
 
 		form.$form.find( 'input[name="variation_id"], input.variation_id' ).val( '' ).change();
+		form.$form.trigger( 'clear_reset_announcement' );
 		form.$form.find( '.wc-no-matching-variations' ).remove();
 
 		if ( form.useAjax ) {
@@ -450,14 +465,35 @@
 	/**
 	 * Show or hide the reset link.
 	 */
-	VariationForm.prototype.toggleResetLink = function( on ) {
+	VariationForm.prototype.toggleResetLink = function (on) {
+		this.$resetAlert.text('');
 		if ( on ) {
 			if ( this.$resetVariations.css( 'visibility' ) === 'hidden' ) {
-				this.$resetVariations.css( 'visibility', 'visible' ).hide().fadeIn();
+				this.$resetVariations.css('visibility', 'visible').hide().fadeIn();
+				this.$resetVariations.css('display', 'inline-block');
 			}
 		} else {
-			this.$resetVariations.css( 'visibility', 'hidden' );
+			this.$resetVariations.css('display', 'none');
+			this.$resetVariations.css('visibility', 'hidden');
 		}
+	};
+
+	/**
+	 * Show no matching variation message.
+	 */
+	VariationForm.prototype.showNoMatchingVariationsMsg = function () {
+		this.$form
+			.find('.single_variation')
+			.after(
+				'<div role="alert">' +
+				'<p class="wc-no-matching-variations woocommerce-info">' +
+				wc_add_to_cart_variation_params.i18n_no_matching_variations_text +
+				'</p>' +
+				'</div>'
+			)
+			.next('div')
+			.find('.wc-no-matching-variations')
+			.slideDown(200);
 	};
 
 	/**
